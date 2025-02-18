@@ -103,21 +103,21 @@ typedef struct sr_icmp_t3_hdr sr_icmp_t3_hdr_t;
 
 typedef struct __attribute__((packed))
 {  
-   uint8_t icmp_type; /**< ICMP Type @see sr_icmp_type */
-   uint8_t icmp_code; /**< ICMP Code (should be 0 for these) */
-   uint16_t icmp_sum; /**< ICMP checksum (covers entire payload) */
-   uint16_t ident; /**< Echo request/reply identification number */
-   uint16_t seq_num; /**< Echo request/reply sequence number */
-   uint8_t data[1]; /**< Variable length data sent with request/reply */
+   uint8_t icmp_type; 
+   uint8_t icmp_code; 
+   uint16_t icmp_sum; 
+   uint16_t ident; /* Echo request/reply identification number */
+   uint16_t seq_num; /* Echo request/reply sequence number */
+   uint8_t data[1]; /* Length data sent with request/reply */
 } sr_icmp_t0_hdr_t, sr_icmp_t8_hdr_t;
 
 typedef struct __attribute__((packed))
 {  
-   uint8_t icmp_type; /**< ICMP Type (should be 11) */
-   uint8_t icmp_code; /**< ICMP Code */
-   uint16_t icmp_sum; /**< ICMP checksum (covers entire payload) */
-   uint16_t unused; /**< unused */
-   uint8_t data[1]; /**< Variable length data containing IP datagram and first 8 bytes of transport. */
+   uint8_t icmp_type; 
+   uint8_t icmp_code; 
+   uint16_t icmp_sum; 
+   uint16_t unused; 
+   uint8_t data[1]; 
 } sr_icmp_t11_hdr_t;
 
 
@@ -218,39 +218,39 @@ struct sr_arp_hdr
 } __attribute__ ((packed)) ;
 typedef struct sr_arp_hdr sr_arp_hdr_t;
 
-#define TCP_OFFSET_M (0xF000)
-/** @brief Urgent Pointer field significant */
-#define TCP_URG_M    (0x0020)
-/** @brief Acknowledgment field significant */
-#define TCP_ACK_M    (0x0010)
-/** @brief Push Function */
-#define TCP_PSH_M    (0x0008)
-/** @brief Reset the connection */
-#define TCP_RST_M    (0x0004)
-/** @brief Synchronize sequence numbers */
-#define TCP_SYN_M    (0x0002)
-/** @brief No more data from sender */
-#define TCP_FIN_M    (0x0001)
+#define TCP_OFFSET (0xF000)
+/* Urgent Pointer   */
+#define TCP_URG    (0x0020)
+/* Acknowledgment   */
+#define TCP_ACK    (0x0010)
+/* Push flag */
+#define TCP_PSH    (0x0008)
+/* Reset */
+#define TCP_RST    (0x0004)
+/* Synchronize sequence numbers */
+#define TCP_SYN    (0x0002)
+/* FIN flag */
+#define TCP_FIN    (0x0001)
 
 typedef struct __attribute__((packed))
 {
-   uint16_t sourcePort; /**< The source port number. */
-   uint16_t destinationPort; /**< The destination port number. */
-   uint32_t sequenceNumber; /**< The sequence number of the first data octet in this segment (except when SYN is present) */
-   uint32_t acknowledgmentNumber; /**< Field contains the value of the next sequence number the sender of the segment is expecting to receive */
+   uint16_t sourcePort; 
+   uint16_t destinationPort; 
+   uint32_t sequenceNumber; 
+   uint32_t acknowledgmentNumber; 
    uint16_t offset_controlBits;
-   uint16_t window; /**< The number of data octets beginning with the one indicated in the acknowledgment field which the sender of this segment is willing to accept. */
+   uint16_t window; 
    uint16_t checksum;
-   uint16_t urgentPointer; /**< current value of the urgent pointer as a positive offset from the sequence number in this segment. */
+   uint16_t urgentPointer; 
 } sr_tcp_hdr_t;
 
 typedef struct __attribute__((packed))
 {
-   uint32_t sourceAddress; /**< The source address of the IP datagram */
-   uint32_t destinationAddress; /**< The destination address of the IP datagram */
-   uint8_t zeros; /**< A byte of 0 */
-   uint8_t protocol; /**< IP Protocol field (should be ip_protocol_tcp) */
-   uint16_t tcpLength; /**< Length of the TCP packet */
+   uint32_t sourceAddress; 
+   uint32_t destinationAddress; 
+   uint8_t reserved; /* Always is 0 */
+   uint8_t protocol; /* Should be ip_protocol_tcp */
+   uint16_t tcpLength;
 } sr_tcp_ip_pseudo_hdr_t;
 
 typedef struct __attribute__((packed))
@@ -263,4 +263,5 @@ typedef struct __attribute__((packed))
 
 #define sr_IFACE_NAMELEN 32
 
-#endif /* -- SR_PROTOCOL_H -- */
+#endif 
+/* -- SR_PROTOCOL_H -- */

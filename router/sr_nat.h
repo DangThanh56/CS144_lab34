@@ -7,11 +7,15 @@
 #include <pthread.h>
 
 #include "sr_protocol.h"
+#include "sr_router.h"
+#include "sr_if.h"
+#include "sr_rt.h"
+#include "sr_arpcache.h"
 
-#define STARTING_PORT_NUMBER  (50000)
-#define LAST_PORT_NUMBER      (59999)
+#define START_PORT_NUMBER  10000
+#define LAST_PORT_NUMBER      19999
 
-#define SIMULTANIOUS_OPEN_WAIT_TIME (6)
+#define SIMULTANIOUS_OPEN_WAIT_TIME 6
 
 struct sr_instance;
 struct sr_if;
@@ -24,10 +28,10 @@ typedef enum {
 
 typedef enum
 {
-   nat_conn_outbound_syn, /**< outbound SYN sent. */
-   nat_conn_inbound_syn_pending, /**< inbound SYN received (and queued). */
-   nat_conn_connected, /**< SYNs sent in both directions. Connection established. */
-   nat_conn_time_wait /**< One of the endpoints has sent a FIN. */
+   nat_conn_outbound_syn, /* outbound SYN sent. */
+   nat_conn_inbound_syn_pending, /* inbound SYN received (and queued). */
+   nat_conn_connected, /* SYNs sent in both directions. Connection established. */
+   nat_conn_time_wait /* One of the endpoints has sent a FIN. */
 } sr_nat_tcp_conn_state_t;
 
 typedef struct sr_nat_connection
@@ -45,7 +49,6 @@ typedef struct sr_nat_connection
    
    struct sr_nat_connection *next;
 } sr_nat_connection_t;
-
 
 
 typedef struct sr_nat_mapping
@@ -100,5 +103,11 @@ struct sr_nat_mapping *sr_nat_lookup_internal(struct sr_nat *nat,
 struct sr_nat_mapping *sr_nat_insert_mapping(struct sr_nat *nat,
   uint32_t ip_int, uint16_t aux_int, sr_nat_mapping_type type );
 
-
 #endif
+
+/* Add functions.*/
+void natHandleRecievedIpPacket(struct sr_instance* sr, sr_ip_hdr_t* ipPacket, unsigned int length,
+                                       sr_if_t *receivedInterface);
+void natNotdonePacketMapping(struct sr_instance* sr, sr_ip_hdr_t* ipDatagram, unsigned int length, 
+                                                            sr_if_t *receivedInterface);
+                                                                                                   

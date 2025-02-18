@@ -12,9 +12,12 @@
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "sr_protocol.h"
 #include "sr_arpcache.h"
+#include "sr_rt.h"
+#include "sr_nat.h"
 
 /* we dont like this debug , but what to do for varargs ? */
 #ifdef _DEBUG_
@@ -41,7 +44,7 @@ struct sr_rt;
  *
  * -------------------------------------------------------------------------- */
 
-struct sr_instance
+typedef struct sr_instance
 {
     int  sockfd;   /* socket to server */
     char user[32]; /* user name */
@@ -52,9 +55,11 @@ struct sr_instance
     struct sr_if* if_list; /* list of interfaces */
     struct sr_rt* routing_table; /* routing table */
     struct sr_arpcache cache;   /* ARP cache */
+    struct sr_nat *nat;     /* NAT structure */
     pthread_attr_t attr;
     FILE* logfile;
-};
+}sr_instance_t;
+
 
 /* -- sr_main.c -- */
 int sr_verify_routing_table(struct sr_instance* sr);
@@ -75,3 +80,17 @@ void sr_set_ether_addr(struct sr_instance* , const unsigned char* );
 void sr_print_if_list(struct sr_instance* );
 
 #endif /* SR_ROUTER_H */
+
+/*Add function. */
+void SendArpRequest(struct sr_instance* sr, struct sr_arpreq* request); 
+void IpSendTypeThreeIcmpPacket(struct sr_instance* sr, sr_icmp_code_t icmpCode,
+                                                 sr_ip_hdr_t* originalPacket);
+void HandleReceivedPacketToRouter(struct sr_instance* sr, sr_ip_hdr_t* packet,
+                                     unsigned int length, sr_if_t *interface);
+void ForwardIpPacket(struct sr_instance* sr, sr_ip_hdr_t* packet,
+                  unsigned int length, struct sr_if* receivedInterface); 
+sr_rt_t* getLongestPrefixRoute(struct sr_instance* sr, in_addr_t destIp);
+bool IcmpPerformIntegrityCheck(sr_icmp_hdr_t *icmpPacket, unsigned int length);
+bool TcpPerformIntegrityCheck(sr_ip_hdr_t *tcpPacket, unsigned int length);
+bool IpDestinationIsRouter(struct sr_instance* sr, sr_ip_hdr_t* packet);
+int getIpHeaderLength(sr_ip_hdr_t *packet);
